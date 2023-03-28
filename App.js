@@ -8,6 +8,7 @@ App.get("/", (req,res)=>{
 });
 App.get("/API",async (req,res)=>{
     let url = `https://newsapi.org/v2/everything?${req._parsedUrl.query}&apiKey=${process.env.APIKEY}`;
+    console.log(url);
     r = await axios(url);
     e = r.data;
     res.json(e);

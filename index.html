@@ -53,7 +53,7 @@
     </nav>
 
     <!-- Content Card -->
-    <div class="container m-auto ">
+    <div>
         <div class="row d-flex justify-content-center " id="content" ></div>
     </div>
 
@@ -91,17 +91,18 @@
                 document.getElementById("nexttab").classList.add("enabled");
             }
 
-            let a = await fetch(`/API?q=${genre}&pagesize=12&page=${page}`);
+            let a = await fetch(`/API?q=${genre}&pagesize=10&page=${page}`);
             let r = await a.json();
+            console.log(a);
             let str = "";
             for(item of r.articles){
                 str += 
-                `<div class="card m-4 bg-white" style="width: 18rem;">
+                `<div class="card m-4 bg-white w-25" >
                 <img src=${item.urlToImage} class="card-img-top" alt="Loading..">
                 <div class="card-body">
                     <h5 class="card-title text-capitalize font-weight-bold text-black text-center">${item.title}</h5>
                     <p class="card-text text-center text-grey">${item.description}</p>
-                    <a href=${item.url} class="btn btn-outline-primary d-flex justify-content-center">Read Full Article at</a>
+                    <a href=${item.url} class="btn btn-sm btn-outline-primary text-end">Read Full Article at</a>
                 </div>
                 </div>`
             }
