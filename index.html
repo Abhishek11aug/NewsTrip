@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,7 +18,7 @@
     <!-- Nav Bar  -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary mb-4" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand">NewsTrip</a>
+            <a class="navbar-brand" href="#">NewsTrip</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -44,17 +44,16 @@
                 </ul>
                 <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
-                    <input class="form-control me-2" type="hidden" name="page" value="1" placeholder="Search" aria-label="Search">
+                    <input class="form-control me-2" type="hidden" name="page" value="1">
                     <button class="btn btn-outline-success " type="submit">Search</button>
                 </form>
             </div>
-        </div>
         </div>
     </nav>
 
     <!-- Content Card -->
     <div>
-        <div class="row d-flex justify-content-center " id="content" ></div>
+        <div class="row d-flex justify-content-center" id="content"></div>
     </div>
 
     <!-- Pagination -->
@@ -66,36 +65,48 @@
     </nav>
 
     <script>
-        if(window.location.search!=''){
-            query = window.location.search.split('?')[1];
+        const pretab = document.getElementById("pretab");
+        const nexttab = document.getElementById("nexttab");
+        const content = document.getElementById("content");
+        
+        let genre, page;
+        
+        if (window.location.search != '') {
+            const query = window.location.search.split('?')[1];
             genre = query.split("&")[0].split("=")[1];
             page = parseInt(query.split("&")[1].split("=")[1]);
             console.log(genre);
             console.log(page);
-        }
-        else{
-            genre = "India"
+        } else {
+            genre = "India";
             page = 1;
         }
-        const FetchNewsFromAPI = async (query, page) => {
+        
+        console.log(genre);
+        console.log(page);
+
+        const FetchNewsFromAPI = async (genre, page) => {
             pretab.href = `?q=${genre}&page=${page - 1}`;
             nexttab.href = `?q=${genre}&page=${page + 1}`;
-            if(page==1){
-                document.getElementById("pretab").classList.add("disabled");
+            
+            if (page === 1) {
+                pretab.classList.add("disabled");
+            } else {
+                pretab.classList.remove("disabled");
             }
-            else if(page==8){
-                document.getElementById("nexttab").classList.add("disabled");
+            
+            if (page === 8) {
+                nexttab.classList.add("disabled");
+            } else {
+                nexttab.classList.remove("disabled");
             }
-            else{
-                document.getElementById("nexttab").classList.add("enabled");
-                document.getElementById("nexttab").classList.add("enabled");
-            }
-
-            let a = await fetch(`/API?q=${genre}&pagesize=10&page=${page}`);
-            let r = await a.json();
-            console.log(a);
+            
+            const response = await fetch(`/API?q=${genre}&pagesize=10&page=${page}`);
+            const data = await response.json();
+            console.log(response);
+            
             let str = "";
-            for(item of r.articles){
+            for (const item of data.articles) {
                 str += 
                 `<div class="card m-4 bg-white w-25" >
                 <img src=${item.urlToImage} class="card-img-top" alt="Loading..">
@@ -104,10 +115,11 @@
                     <p class="card-text text-center text-grey">${item.description}</p>
                     <a href=${item.url} class="btn btn-sm btn-outline-primary text-end">Read Full Article at</a>
                 </div>
-                </div>`
+                </div>`;
             }
-            content.innerHTML=str
+            content.innerHTML = str;
         }
+        
         FetchNewsFromAPI(genre, page);
     </script>
 
